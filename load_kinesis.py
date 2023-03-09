@@ -6,7 +6,7 @@ import time
 
 # function to create a client with specific service and region
 def create_client(service, region):
-    return boto3.client(service, region=region)
+    return boto3.client(service, region_name=region)
 
 
 # function to load data from csv
@@ -56,7 +56,7 @@ def send_kinesis(client, kinesis_stream_name, kinesis_shard_count, data: pd.Data
 
     total_row_count = rows
 
-    send_kinesis = False
+    sendKinesis = False
 
     shard_count = 1
 
@@ -77,14 +77,14 @@ def send_kinesis(client, kinesis_stream_name, kinesis_shard_count, data: pd.Data
             or current_bytes > 50000
             or row_count == total_row_count - 1
         ):
-            send_kinesis = True
+            sendKinesis = True
 
-        if send_kinesis:
+        if sendKinesis:
             client.put_records(Records=kinesis_records, StreamName=kinesis_stream_name)
 
             kinesis_records = []
             current_bytes = 0
-            send_kinesis = False
+            sendKinesis = False
 
             shard_count += 1
 
